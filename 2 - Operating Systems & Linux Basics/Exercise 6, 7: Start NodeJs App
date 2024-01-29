@@ -1,0 +1,50 @@
+#!/bin/bash
+apt update
+echo "install node, npm, curl"
+apt install -y nodejs npm curl
+sleep 15
+echo ""
+echo "wait for 15 seconds"
+echo ""
+
+# read user input for log directory
+read -p "Set log directory location for the application (absolute path): " LOG_DIRECTORY
+if [ -d $LOG_DIRECTORY ]
+then
+  echo "$LOG_DIRECTORY already exists"
+else
+  mkdir -p $LOG_DIRECTORY
+  echo "A new directory $LOG_DIRECTORY has been created"
+fi
+
+# display nodeJS version
+echo "NodeJS $(node --version) installed"
+
+# display npm version
+echo "NPM version $(npm --version) installed"
+
+# fetch NodeJS project archive from s3 bucket
+curl https://node-envvars-artifact.s3.eu-west-2.amazonaws.com/bootcamp-node-envvars-project-1.0.0.tgz -o $LOG_DIRECTORY/project.tgz
+
+# extract the project archive to ./package folder
+tar -zxvf $LOG_DIRECTORY/project.tgz
+
+# set all needed environment variables
+export APP_ENV=dev
+export DB_PWD=mysecret
+export DB_USER=myuser 
+
+# change to package directory
+cd package
+
+# install application dependencies
+npm install
+
+# start the nodejs application in the background
+node server.js &
+
+# display that nodejs process is running
+ps aux | grep node | grep -v grep
+
+# display that nodejs is running on port 3000
+netstat -ltnp | grep :3000
