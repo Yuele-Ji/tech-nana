@@ -1,0 +1,13 @@
+#!/bin/bash
+read -p "Would you like to sort the processes output by memory or CPU? (m/c) " sort
+read -p "How many results do you want to display? " lines
+
+if [ "$sort" = "m" ]
+then
+    ps aux --sort -%mem | grep "$USER" | head -n "$lines"
+elif [ "$sort" = "c" ]
+then
+    ps aux --sort -%cpu | grep -i "$USER" | head -n "$lines"
+else
+    echo "No input provided. Exiting"
+fi
