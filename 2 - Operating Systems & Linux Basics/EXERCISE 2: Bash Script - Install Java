@@ -1,0 +1,12 @@
+#!/bin/bash
+apt update
+apt install -y default-jre
+sleep 15
+version=$(java --version 2>&1 | grep "openjdk" | awk '{ print substr($2,1,2) }')
+if [ "$version" -ge 11 ]
+then echo "java version of 11 or higher was installed"
+elif [ "$version" -lt 11 ]
+then echo "an older Java version is installed (java version lower than 11)"
+else
+then echo "java is not installed"
+fi
